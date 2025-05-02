@@ -10,11 +10,13 @@
 
 //When the motor encode
 float rpm = 0;
+//For tracking RPM & ANALOG INPUT 
+//int spd = 0;
+//int cnt = 0;
 Motor m(motorSpeed,motorDir1,motorDir2,enc1,enc2);
 void setup() {
   Serial.begin(9600);
   attachInterrupt(digitalPinToInterrupt(enc2), countPulse, RISING);
-  attachInterrupt(digitalPinToInterrupt(enc1), countPulse, RISING);
   unsigned long currentTime = millis();
   m.update(currentTime);
 
@@ -28,14 +30,40 @@ void loop() {
   if (currentTime - m.lastTime >= 1000) {
     noInterrupts();
     m.update(currentTime);
-    Serial.println("RPM: ");
-    Serial.println(m.RPM);
     interrupts();
 
 }
+
+//CODE FOR RPM & ANALOG INPUT
+/*
+if(m.lastTime/2000 > cnt){
+  spd++;
+  cnt++;
+}
+
+if(spd > 255){
+  spd = 255;
+  m.setSpeed(0);
+  while(true);
 }
 
 
+Serial.print(spd);
+Serial.print(",");
+Serial.println(m.RPM);
+delay(500);
+}
+*/
+
 void countPulse() {
   m.pulseCount++;
+}
+
+void command(){
+  Serial.println("----------------");
+  Serial.println("Set speed ('sp')");
+  Serial.println("Toggle output ('to')");
+  Serial.println("Set direction ('sd')");
+  Serial.println("Set Control Velocity ('cv')");
+  Serial.println("----------------");
 }
